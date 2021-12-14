@@ -1,0 +1,325 @@
+{% extends 'profile.html' %}
+{% block body %}
+    <style>
+        .list_title {
+
+        }
+
+        .list_text {
+            font-size: 20px;
+            color: navy;
+        }
+
+
+        section {
+            padding-top: 6.25em;
+            padding-bottom: 6.25em;
+            position: relative
+        }
+
+        .pb-4,
+        .py-4 {
+            padding-bottom: 1.5rem !important
+        }
+
+        h2 {
+            font-size: 2rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: #222222;
+            margin: 0 0 15px;
+            font-family: "Poppins", sans-serif;
+            line-height: 1.75rem
+        }
+
+        .lis-light {
+            color: #707070
+        }
+
+        .font-weight-normal {
+            font-weight: 400 !important
+        }
+
+        h5 {
+            font-size: 1.25rem
+        }
+
+        .price-table {
+            -webkit-transition: 0.3s ease
+        }
+
+        .lis-brd-light {
+            border-color: #dadada !important
+        }
+
+        .lis-rounded-top {
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px
+        }
+
+
+        .pb-4,
+        .py-4 {
+            padding-bottom: 1.5rem !important
+        }
+
+        .lis-latter-spacing-2 {
+            letter-spacing: 2px
+        }
+
+        .text-uppercase {
+            text-transform: uppercase !important
+        }
+
+        .lis-font-weight-500 {
+            font-weight: 500
+        }
+
+        .display-4 {
+            font-size: 3.5rem
+        }
+
+        .price-table sup {
+            top: -1.5em
+        }
+
+        .price-table sup,
+        .price-table small {
+            font-size: 1.25rem
+        }
+
+        .price-table small {
+            font-size: 1.25rem
+        }
+
+        .mb-0,
+        .my-0 {
+            margin-bottom: 0 !important
+        }
+
+        sup {
+            position: relative;
+            font-size: 75%;
+            line-height: 0
+        }
+
+        .lis-brd-light {
+            border-color: #dadada !important
+        }
+
+        .bg-white {
+            background-color: #fff !important
+        }
+
+        .py-5 {
+            padding-bottom: 3rem !important
+        }
+
+        .lis-line-height-3 {
+            line-height: 3 !important
+        }
+
+        .list-unstyled {
+            padding-left: 0;
+            list-style: none
+        }
+
+        .lis-line-height-3 {
+            line-height: 3 !important
+        }
+
+        .btn-primary-outline {
+            background-color: transparent;
+            color: #ff214f !important;
+            border-color: #ff214f
+        }
+
+        .btn {
+            color: #fff;
+            padding: .5rem 1.3rem;
+            font-size: 1rem;
+            word-wrap: break-word
+        }
+
+        .lis-rounded-circle-50 {
+            border-radius: 50px
+        }
+
+        .pl-2,
+        .px-2 {
+            padding-right: .5rem !important
+        }
+
+        .btn-primary-outline:hover,
+        .btn-primary-outline:focus {
+            background-color: #ff214f;
+            border-color: #ff214f;
+            color: #fff !important
+        }
+
+        .lis-bg-primary {
+            background-color: #ff214f
+        }
+
+        .btn-primary {
+            background-color: #ff214f;
+            border-color: #ff214f
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #ff214f;
+            border-color: #ff214f
+        }
+
+        .price-table.active {
+            transform: scale(1.045);
+            -webkit-transform: scale(1.045)
+        }
+
+        .price-table {
+            -webkit-transition: 0.3s ease
+        }
+
+        .lis-rounded-bottom {
+            border-bottom-right-radius: 20px;
+            border-bottom-left-radius: 20px
+        }
+
+        hr {
+            margin-top: 0px; !important;
+            margin-bottom: 0px; !important;
+        }
+    </style>
+    <section class="lis-bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 text-center">
+                    <div class="heading pb-4">
+                        <h2>Sale Details</h2>
+                        <h5 class="font-weight-normal lis-light">See and understand</h5>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4 wow fadeInUp mb-5 mb-lg-0 text-center"
+                     style="visibility: visible; animation-name: fadeInUp;">
+                    <div class="price-table">
+                        <div class="price-header lis-bg-light lis-rounded-top py-4 border border-bottom-0 lis-brd-light">
+                            <h5 class="text-uppercase lis-latter-spacing-2">{{ sale_prev.mop }}</h5>
+                            <h1 class="display-4 lis-font-weight-500"><sup>$</sup> {{ sale_prev.Amount }}</h1>
+                            <p class="mb-0">{{ sale_prev.SalesID }}</p>
+                        </div>
+                        <div class="border border-top-0 lis-brd-light bg-white py-5 lis-rounded-bottom">
+                            <ul class="list-unstyled lis-line-height-3">
+                                <li>Receiver: {{ sale_prev.Receiver }}
+                                    <hr>
+                                </li>
+                                <li>Sender: {{ sale_prev.Sender }}
+                                    <hr>
+                                </li>
+                                <li>Product ID: {{ sale_prev.SalesID }}
+                                    <hr>
+                                </li>
+                                <li>Accept: {{ sale_prev.Accept }}
+                                    <hr>
+                                </li>
+                                <li>Time: {{ sale_prev.Date }}
+                                    <hr>
+                                </li>
+                                <li>Note<br>{{ sale_prev.Note }}
+                                    <hr>
+                                </li>
+                                <li>24/7 Support</li>
+                            </ul>
+                            <a href="#" class="btn btn-primary-outline btn-md lis-rounded-circle-50" data-abc="true"><i
+                                    class="fa fa-shopping-cart pl-2"></i>Order Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 wow fadeInUp mb-5 mb-lg-0 text-center"
+                     style="visibility: visible; animation-name: fadeInUp;">
+                    <div class="price-table active">
+                        <div class="price-header lis-bg-primary py-4 text-white lis-rounded-top">
+                            <h5 class="text-uppercase lis-latter-spacing-2 text-white">{{ sale.mop }}</h5>
+                            <h1 class="display-4 lis-font-weight-500 text-white">৳{{ sale.Amount }}</h1>
+                            <p class="mb-0">{{ sale.SalesID }}</p>
+                        </div>
+                        <div class="border border-top-0 lis-brd-light bg-white py-5 lis-rounded-bottom">
+                            <ul class="list-unstyled lis-line-height-3">
+                                <li><span class="list_title">Receiver</span><br><span
+                                        class="list_text">{{ sale.Receiver }}</span>
+                                    <hr>
+                                </li>
+                                <li><span class="list_title">Sender</span><br><span
+                                        class="list_text">{{ sale.Sender }}</span>
+                                    <hr>
+                                </li>
+                                <li><span class="list_title">Product ID</span><br><span
+                                        class="list_text">{{ sale.SalesID }}</span>
+                                    <hr>
+                                </li>
+                                <li><span class="list_title">Accept</span><br><span
+                                        class="list_text">{{ sale.Accept }}</span>
+                                    <hr>
+                                </li>
+                                <li><span class="list_title">Time</span><br><span
+                                        class="list_text">{{ sale.Date }}</span>
+                                    <hr>
+                                </li>
+                                <li><span class="list_title">Note</span><br>{{ sale.Note }}
+                                    <hr>
+                                </li>
+                                <li>24/7 Support</li>
+                            </ul>
+                            <a href="#" class="btn btn-primary btn-md lis-rounded-circle-50" data-abc="true"><i
+                                    class="fa fa-shopping-cart pl-2"></i>Order Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 wow fadeInUp mb-5 mb-lg-0 text-center"
+                     style="visibility: visible; animation-name: fadeInUp;">
+                    <div class="price-table">
+                        <div class="price-header lis-bg-light lis-rounded-top py-4 border border-bottom-0 lis-brd-light">
+                            <h5 class="text-uppercase lis-latter-spacing-2">{{ sale_post.mop }}</h5>
+                            <h1 class="display-4 lis-font-weight-500"><sup>$</sup> {{ sale_post.Amount }}</h1>
+                            <p class="mb-0">{{ sale_post.SalesID }}</p>
+                        </div>
+                        <div class="border border-top-0 lis-brd-light bg-white py-5 lis-rounded-bottom">
+                            <ul class="list-unstyled lis-line-height-3">
+                                <li>Receiver: {{ sale_post.Receiver }}
+                                    <hr>
+                                </li>
+                                <li>Sender: {{ sale_post.Sender }}
+                                    <hr>
+                                </li>
+                                <li>Product ID: {{ sale_post.SalesID }}
+                                    <hr>
+                                </li>
+                                <li>Accept: {{ sale_post.Accept }}
+                                    <hr>
+                                </li>
+                                <li>Time: {{ sale_post.Date }}
+                                    <hr>
+                                </li>
+                                <li>Note<br>{{ sale_post.Note }}
+                                    <hr>
+                                </li>
+                                <li>24/7 Support</li>
+                            </ul>
+                            <a href="#" class="btn btn-primary-outline btn-md lis-rounded-circle-50" data-abc="true"><i
+                                    class="fa fa-shopping-cart pl-2"></i>Order Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

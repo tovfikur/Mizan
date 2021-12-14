@@ -1,0 +1,225 @@
+{% extends 'profile.html' %}
+
+{% block body %}
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Raleway:400,700);
+
+        .card-form {
+            width: 500px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 27px 55px 0 rgba(0, 0, 0, 0.3), 0 17px 17px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .card-form .form-title {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #27ae60;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-form .form-body {
+            padding: 10px;
+        }
+
+        .card-form .form-body .row {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+
+        .card-form .form-body .row input[type=text] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 100%;
+            margin: 0 15px;
+            height: 35px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            background: #e8ebed;
+            color: #576366;
+            font-size: 14px;
+        }
+
+        .card-form .rule {
+            height: 2px;
+            background: #e8ebed;
+            margin: 0px 35px;
+        }
+
+        .card-form .form-footer {
+            margin: 0 25px 15px 25px;
+            padding: 15px 10px;
+        }
+
+        .card-form .form-footer a {
+            display: inline-block;
+            height: 40px;
+            line-height: 40px;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 15px;
+            background: #27ae60;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .card-form .form-footer span {
+            margin-left: 8px;
+        }
+
+
+        .btn-hold--progress-bar {
+            z-index: 999;
+            background: #76d750;
+            width: 100%;
+            margin: 0 20px;
+        {#height: 6px;#} position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .fa-truck.fa-2x {
+            z-index: 0;
+        !important;
+            float: right;
+        }
+
+
+    </style>
+    <center>
+        <div class="card-form">
+            <form class="signup">
+                {% csrf_token %}
+                <div class="form-title">Balance Transfer</div>
+                <div class="form-body">
+                    <div class="row">
+                        <input name="Amount" class="form-control" type="number" value="" placeholder="Amount">
+                        <select class="form-control" name="Method">
+                            <option value="1">BKash</option>
+                            <option value="2">Nagad</option>
+                            <option value="3">Bank A/C</option>
+                            <option value="4">Cash</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <input name="Receiver" type="text" placeholder="ID">
+                        <input name="Note" class="form-control" type="text" value="" placeholder="Note">
+                    </div>
+                </div>
+                <div class="rule"></div>
+                <div class="form-footer">
+                    <butotn class="btn-hold btn btn-outline-success">Transfer <span class="fa fa-truck"></span></butotn>
+                </div>
+            </form>
+        </div>
+    </center>
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Receiver Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Method</th>
+            <th scope="col">Accept</th>
+            <th scope="col">Note</th>
+        </tr>
+        </thead>
+        <tbody id="activity_table">
+        {% for data in list %}
+            <tr>
+                <th scope="row">{{ data.id }} </th>
+                <td> {{ data.Date }} </td>
+                <td> {{ data.Receiver.username }} </td>
+                <td> {{ data.Amount }} </td>
+                <td> {{ data.method }} </td>
+                <td> {{ data.Accept }} </td>
+                <td> {{ data.Note }} </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        $(".reset").click(function (event) {
+            $(".btn-hold").css("background-color", "#006A49");
+        });
+        $("btn-hold").click(function (event) {
+            event.preventDefault();
+        });
+        $(".btn-hold").mousedown(function (event) {
+            event.preventDefault();
+            $(this).append('<span class="btn-hold--progress-bar"><i class="fas fa-truck fa-2x"></i></span>');
+            var progress = $(this).children(".btn-hold--progress-bar");
+            $(progress).width("0%");
+            $(progress).animate(
+                {
+                    width: "100%"
+                },
+                5000,
+                "linear",
+                function () {
+                    $(this).empty()
+                    $(progress).width("0%");
+                    Transaction();
+                }
+            );
+        });
+
+        $(".btn-hold").mouseup(function () {
+            var progress = $(this).children(".btn-hold--progress-bar");
+            $(progress).stop();
+            $(progress).width("0%");
+        });
+
+    </script>
+    <script>
+        function Transaction() {
+            $.ajax({
+                url: '/user/api/balance',
+                method: 'POST',
+                data: new FormData($('.signup')[0]),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#activity_table').prepend(
+                        '<tr> ' +
+                        '<th scope="row">' + data.id + '</th> ' +
+                        '<td>' + data.Date + '</td> ' +
+                        '<td>' + data.Receiver.username + '</td> ' +
+                        '<td>' + data.Amount + '</td> ' +
+                        '<td>' + data.method + '</td> ' +
+                        '<td>' + data.Accept + '</td> ' +
+                        '<td>' + data.Note + '</td> ' +
+                        '</tr>');
+                    $(".btn-hold").parent().submit();
+                    $(".btn-hold").css("background-color", "#3da539");
+                    $(".btn-hold").css("color", "black");
+                    $(".btn-hold").empty();
+                    $(".btn-hold").append('Success <i class="fas fa-check-circle"></i>');
+                    setTimeout("location.reload()", 1500);
+
+                },
+                error: function (data) {
+                    var s = data.responseJSON;
+                    for (var k in s) {
+                        $('*[name*="' + k + '"]').css("border-color", "red");
+                        alert('Please fill ' + k);
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

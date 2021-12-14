@@ -1,0 +1,166 @@
+{% extends 'profile.html' %}
+
+{% block body %}
+    <div class="container rounded bg-white mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-5 border-right">
+                <div class="p-3 py-5">
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control"
+                                                                                       placeholder="{{ employee.Name }}"
+                                                                                       value=""></div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">PhoneNumber</label><input type="text"
+                                                                                               class="form-control"
+                                                                                               placeholder="{{ employee.Phone }}"
+                                                                                               value=""></div>
+                        <div class="col-md-12"><label class="labels">Immediate Boss</label><input type="text"
+                                                                                                  class="form-control"
+                                                                                                  placeholder="{{ employee.PID }}"
+                                                                                                  value=""></div>
+                        <div class="col-md-10"><label class="labels">Position</label>
+                            <select id="pos" class="form-control"
+                                    name="position">
+
+                                <option value="">---------</option>
+                                {% if employee.is_owner %}
+                                    <option value="Owner" selected>Owner</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Employee">Employee</option>
+                                {% endif %}
+                                {% if employee.is_admin %}
+                                    <option value="Owner">Owner</option>
+                                    <option value="Admin" selected>Admin</option>
+                                    <option value="Employee">Employee</option>
+                                {% endif %}
+                                {% if employee.is_employee %}
+                                    <option value="Owner">Owner</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Employee" selected>Employee</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="col-md-2"><label class="labels">    &nbsp;</label><input onclick="change_position()" type="button" class="btn btn-success" value="Save"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 py-5">
+                    Credit
+                    <br>
+                    {% for foo in credit_list %}
+                        <input onclick="remove_category('{{ employee.auth.id }}', '{{ foo.id }}', '1')"
+                               value="{{ foo.Title }}" type="button" class="btn btn-primary">
+                    {% endfor %}
+                    <input value="Add" data-toggle="modal" data-target="#creditModal" type="button"
+                           class="btn btn-success">
+                    <br>
+                    <hr>
+                    <br>
+                    Debit
+                    <br>
+                    {% for foo in debit_list %}
+                        <input onclick="remove_category('{{ employee.auth.id }}', '{{ foo.id }}', '')"
+                               value="{{ foo.Title }}" type="button" class="btn btn-primary">
+                    {% endfor %}
+                    <input value="Add" data-toggle="modal" data-target="#debitModal" type="button"
+                           class="btn btn-success">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+
+    <div id="creditModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped text-center">
+                        <tbody>
+                        {% for foo in credit_all %}
+                            <tr>
+                                <td onclick="add_category('{{ employee.auth.id }}', '{{ foo.id }}', '1')">{{ foo.Title }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="debitModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped text-center">
+                        <tbody>
+                        {% for foo in debit_all %}
+                            <tr>
+                                <td onclick="add_category('{{ employee.auth.id }}', '{{ foo.id }}', '')">{{ foo.Title }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <style>
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #BA68C8
+        }
+    </style>
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        function remove_category(id, cat_id, cat) {
+            $.ajax({
+                url: '/user/api/remove_sub_categorys?cat=' + cat + '&cat_id=' + cat_id + '&id=' + id,
+                success: () => {
+                    location.reload()
+                }
+            })
+        }
+
+        function add_category(id, cat_id, cat) {
+            $.ajax({
+                url: '/user/api/add_sub_categorys?cat=' + cat + '&cat_id=' + cat_id + '&id=' + id,
+                success: () => {
+                    location.reload()
+                }
+            })
+        }
+
+        function change_position(id) {
+            $.ajax({
+                url: '/user/api/employee/change_position?id={{ employee.id }}&pos='+$('#pos').val(),
+                success: ()=>{
+                    location.reload()
+                }
+            })
+        }
+
+    </script>
+{% endblock %}

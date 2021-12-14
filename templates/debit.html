@@ -1,0 +1,128 @@
+{% extends 'profile.html' %}
+
+{% block body %}
+
+    <div class="row">
+        {% for o in category %}
+            <div class="col-md-2">
+                <div class="form-group">
+                    <button title="{{ o.Title }}" val="{{ o.id }}" onclick="SelectReason(this)" class="btn btn-success"
+                            data-toggle="modal"
+                            data-target="#form">{{ o.Title }}</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0">
+                    <h3 class="modal-title" id="exampleModalLabel">Create Account</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addform">
+                    {% csrf_token %}
+                    <input name="User" value="{{ user.id }}" hidden>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp"
+                                   placeholder="Amount" name="Amount">
+                        </div>
+                        <div class="form-group">
+                            <label>MOP</label>
+                            <select class="form-control" name="Method">
+                                <option value="1">BKash</option>
+                                <option value="2">Nagad</option>
+                                <option value="3">Bank A/C</option>
+                                <option value="4">Cash</option>
+                            </select>
+                        </div>
+                        <div class="form-group" hidden>
+                            <label>Amount</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp"
+                                   placeholder="Reason" name="Reason" id="reason">
+
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp"
+                                   placeholder="Note" name="Note">
+                        </div>
+                    </div>
+
+                </form>
+                <div class="modal-footer border-top-0 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success" onclick="Transaction()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">subCategory</th>
+            <th scope="col">MOP</th>
+            <th scope="col">Note</th>
+        </tr>
+        </thead>
+        <tbody id="activity_table">
+        {% for li in list %}
+            <tr>
+                <th scope="row"> {{ li.id }}</th>
+                <td>{{ li.Date }}</td>
+                <td>{{ li.Amount }}</td>
+                <td>{{ li.Reason.Title }}</td>
+                <td>{{ li.method_text }}</td>
+                <td>{{ li.Note }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        function SelectReason(x) {
+            $('#reason').val($(x).attr('val'))
+            $('#exampleModalLabel').text($(x).attr('title'))
+
+        }
+
+        function Transaction() {
+            $.ajax({
+                url: '/user/api/debit',
+                method: 'POST',
+                data: new FormData($('#addform')[0]),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#activity_table').prepend(
+                        '<tr> ' +
+                        '<th scope="row">' + data.id + '</th> ' +
+                        '<td>' + data.Date + '</td> ' +
+                        '<td>' + data.Amount + '</td> ' +
+                        '<td>' + data.Reason + '</td> ' +
+                        '<td>' + data.method_text + '</td> ' +
+                        '<td>' + data.Note + '</td> ' +
+                        '</tr>');
+                    $('.modal').modal('toggle');
+                },
+                error: function (data) {
+                    var s = data.responseJSON;
+                    for (var k in s) {
+                        $('*[name*="' + k + '"]').css("border-color", "red");
+                        alert('Please fill ' + k);
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

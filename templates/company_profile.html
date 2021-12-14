@@ -1,0 +1,123 @@
+{% extends 'profile.html' %}
+{% block body %}
+    <style>
+        .container {
+            width: 100% !important;
+        }
+
+        .profile-nav {
+            width: 15% !important;
+        }
+    </style>
+    <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
+    <div class="m-4">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Category</th>
+                <th>Meter</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="table-primary">
+                <td>Balance</td>
+                <td>{{ balance }}৳</td>
+
+            </tr>
+            <tr class="table-secondary">
+                <td>Total Cost</td>
+                <td>{{ cost }}৳</td>
+
+            </tr>
+            <tr class="table-success">
+                <td>Total Income</td>
+                <td>{{ income }}৳</td>
+
+            </tr>
+            <tr class="table-info">
+                <td>Transaction</td>
+                <td>{{ saving }}৳</td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <center>
+        <a class="btn btn-primary" href="/user/sale_report"><i class="fas fa-store"></i><br>Sale Report</a>
+        <a class="btn btn-primary" href="/user/debit_report"><i class="fas fa-money-bill-wave"></i><i class="fas fa-minus-circle"></i><br>Debit Report</a>
+        <a class="btn btn-primary" href="/user/credit_report"><i class="fas fa-money-bill-wave"></i><i class="fas fa-plus-circle"></i><br>Credit Report</a>
+    </center>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    {% block table %}
+
+    {% endblock %}
+{% endblock %}
+
+{% block extrajs %}
+
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            // Setup - add a text input to each header cell
+            $('#tbAdresse thead th').each(function () {
+                var title = $(this).text();
+                $(this).html('<input type="text"   placeholder="Search ' + title + '" />');
+            });
+
+            // DataTable
+            var table = $('#tbAdresse').DataTable();
+
+            // Apply the search
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.header()).on('keypress change', function (e) {
+                    var keycode = e.which;
+                    //launch search action only when enter is pressed
+                    if (keycode == '13') {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    }
+                });
+            });
+
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+
+        });
+
+        function sum() {
+            var myRows = [];
+            var $headers = $("th");
+            var $rows = $("#tbAdresse tr").each(function (index) {
+                $cells = $(this).find("td");
+                myRows[index] = {};
+                $cells.each(function (cellIndex) {
+                    myRows[index][$($headers[cellIndex]).html()] = $(this).html();
+                });
+            });
+            var total = 0
+            $.each(myRows, (key, value) => {
+                if (parseInt(value.Meter)) {
+                    total = total + parseInt(value.Meter)
+                }
+            })
+            $('#amnt').text(total)
+        }
+    </script>
+{% endblock %}

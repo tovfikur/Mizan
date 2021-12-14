@@ -1,0 +1,133 @@
+{% extends 'profile.html' %}
+
+{% block body %}
+    <form id="sale_form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <input name="Amount" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Product ID</label>
+                    <input name="SalesID" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">TrxID</label>
+                    <input name="TrxID" type="text" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">MOP</label>
+                    <select class="form-control" name="ModeOfPayment">
+                        <option value="1">BKash</option>
+                        <option value="2">Nagad</option>
+                        <option value="3">Bank A/C</option>
+                        <option value="4">Cash</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label">Sender Phone number</label>
+                    <input name="Sender" type="text" class="form-control"/>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Receiver ID</label>
+                    <input name="Receiver" type="text" class="form-control"/>
+                </div>
+            </div>
+            <center>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Note</label>
+                        <input name="Note" type="text" class="form-control"/>
+                    </div>
+                </div>
+            </center>
+        </div>
+    </form>
+    <div class="col-md-2">
+        <div class="form-group">
+            <button id="submit" class="btn btn-success">Submit</button>
+        </div>
+    </div>
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Receiver Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Accept</th>
+            <th scope="col">Note</th>
+        </tr>
+        </thead>
+        <tbody id="sale_table">
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        $($.ajax({
+                url: "/user/api/sale",
+                success: function (result) {
+                    $('#sale_table').empty();
+                    $.each(result, (key, value) => {
+                        var d = new Date(value.Date)
+                        $('#sale_table').append(
+                            '<tr> ' +
+                            '<th scope="row"><a href="/user/sale/detail?d=' + value.id + '">' + value.id + '</a></th> ' +
+                            '<td>' + d.toLocaleString() + '</td> ' +
+                            '<td>' + value.Receiver.Name + '</td> ' +
+                            '<td>' + value.Amount + '</td> ' +
+                            '<td>' + value._init_Accept + '</td> ' +
+                            '<td>' + value.Note + '</td> ' +
+                            '</tr>')
+                    })
+                }
+            })
+        )
+
+        $('#submit').click(() => {
+            $.ajax({
+                url: '/user/api/sale',
+                method: 'POST',
+                data: new FormData($('#sale_form')[0]),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#sale_table').prepend(
+                        '<tr> ' +
+                        '<th scope="row">' + data.id + '</th> ' +
+                        '<td>' + data.Date + '</td> ' +
+                        '<td>' + data.Receiver.Name + '</td> ' +
+                        '<td>' + data.Amount + '</td> ' +
+                        '<td>' + data._init_Accept + '</td> ' +
+                        '<td>' + data.Note + '</td> ' +
+                        '</tr>')
+                },
+                error: function (data) {
+                    var s = data.responseJSON;
+                    for (var k in s) {
+                        $('*[name*="' + k + '"]').css("border-color", "red");
+                        alert('Please fill ' + k);
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}
